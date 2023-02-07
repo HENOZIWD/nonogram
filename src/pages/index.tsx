@@ -5,6 +5,7 @@ import styles from '@/styles/Home.module.css'
 import Link from 'next/link'
 
 export default function Home() {
+
   return (
     <>
       <Head>
@@ -60,7 +61,7 @@ export default function Home() {
 
         <div className={styles.grid}>
           <Link
-            href={'/game/test'}
+            href={'/game/board'}
             className={styles.card}
           >
             <h2>
