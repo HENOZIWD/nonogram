@@ -1,1 +1,2 @@
-![nonogram_heart](https://user-images.githubusercontent.com/89011648/217544236-f04fe92a-e4ab-4734-92bf-50addb880c06.JPG)
+![nonogram_heart](https://user-images.githubusercontent.com/89011648/217549130-39e050df-8491-4749-adf6-6d10935ceef6.JPG)
+
