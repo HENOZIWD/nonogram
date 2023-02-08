@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-const Square = styled.div<{ checked: boolean }>`
+const Square = styled.div<{ filled: boolean }>`
   border: 1px solid white;
   width: 1rem;
   height: 1rem;
@@ -9,38 +9,40 @@ const Square = styled.div<{ checked: boolean }>`
   font-size: 0.5rem;
   user-select: none;
   background-color: ${props => 
-    props.checked ? '#000000' : '#ffffff'
+    props.filled ? '#000000' : '#ffffff'
   };
 `
 
-export default function Cell() {
+interface ICellProps {
+  filled: boolean;
+  checked: boolean;
+  fillCell: () => void;
+  checkCell: () => void;
+}
 
-  const [filled, setFilled] = useState<boolean>(false);
-  const [checked, setChecked] = useState<boolean>(false);
+export default function Cell(props: ICellProps) {
 
   const onLeftClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
-    if (checked) {
-      setChecked(false);
-    }
-    setFilled(!filled);
+    props.fillCell();
+
+    // console.log("Left Click");
   }
 
   const onRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
-    if (filled) {
-      setFilled(false);
-    }
-    setChecked(!checked);
+    props.checkCell();
+
+    // console.log("Right Click");
   }
 
   return (
     <Square 
-      checked={filled}
+      filled={props.filled}
       onClick={onLeftClick}
       onContextMenu={onRightClick}
     >
-      {checked ? "🚩" : ""}
+      {props.checked ? "🚩" : ""}
     </Square>
   )
 }

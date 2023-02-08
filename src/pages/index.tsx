@@ -61,7 +61,7 @@ export default function Home() {
 
         <div className={styles.grid}>
           <Link
-            href={'/game/board'}
+            href={'/game'}
             className={styles.card}
           >
             <h2>
