@@ -1,0 +1,16 @@
+{
+  "rowSize": 6,
+  "colSize": 7,
+  "answer": [false, true, false, false, true, true, false,
+             true, true, false, true, false, false, true,
+             false, true, false, false, false, false, true,
+             false, true, false, false, true, true, false,
+             false, true, false, true, false, false, false,
+             true, true, true, true, true, true, true],
+  "hint": {
+    "rowHint": [[1, 2], [2, 1, 1], [1, 1], [1, 2], [1, 1], [7]],
+    "colHint": [[1, 1], [6], [1], [1, 2], [1, 1, 1], [1, 1, 1], [2, 1]],
+    "rowHintMaxLength": 3,
+    "colHintMaxLength": 3
+  }
+}

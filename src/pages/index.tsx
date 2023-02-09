@@ -61,30 +61,28 @@ export default function Home() {
 
         <div className={styles.grid}>
           <Link
-            href={'/game'}
+            href={'/game/1'}
             className={styles.card}
           >
             <h2>
-              Game <span>&gt;</span>
+              Heart&nbsp;<span>&gt;</span>
             </h2>
             <p>
-              Find in-depth information about Next.js features and&nbsp;API.
+              Make lovely heart!
             </p>
           </Link>
 
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          <Link
+            href={'/game/2'}
             className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
           >
             <h2>
-              Learn <span>&gt;</span>
+              Twelve&nbsp;<span>&gt;</span>
             </h2>
             <p>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
+              What is your favorite number?
             </p>
-          </a>
+          </Link>
 
           <a
             href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"

@@ -1,7 +1,6 @@
-import Link from 'next/link';
-import { useState } from 'react';
 import styled from 'styled-components';
 import Cell from './cell';
+import { IHintData } from '../lib/game';
 
 const CellTable = styled.table`
   display: table;
@@ -48,13 +47,6 @@ interface IBoardProps {
   checkedStatus: boolean[];
   fillCell: (i: number) => void;
   checkCell: (i: number) => void;
-}
-
-export interface IHintData {
-  rowHint: number[][];
-  colHint: number[][];
-  rowHintMaxLength: number;
-  colHintMaxLength: number;
 }
 
 export default function Board(props: IBoardProps) {
@@ -107,13 +99,14 @@ export default function Board(props: IBoardProps) {
 
       /* ============================== Row hint cell =============================== */
       for (let rowHintIdx: number = props.hint.rowHintMaxLength-1; rowHintIdx >= 0; rowHintIdx--) {
+        const currentRowHintLength = props.hint.rowHint[rowIdx].length;
         // Generate key of hint cell
         const hintCellIdx = rowSize*colSize + props.hint.colHintMaxLength*(props.hint.rowHintMaxLength + colSize) + rowIdx*props.hint.rowHintMaxLength + (props.hint.rowHintMaxLength - rowHintIdx - 1);
 
         tdContainer.push(
           <Hint key={hintCellIdx}>
-            {(rowHintIdx < props.hint.rowHint[rowIdx].length) ? (
-              props.hint.rowHint[rowIdx][rowHintIdx]
+            {(rowHintIdx < currentRowHintLength) ? (
+              props.hint.rowHint[rowIdx][currentRowHintLength - rowHintIdx - 1]
             ) : (
               null
             )}

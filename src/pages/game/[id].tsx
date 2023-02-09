@@ -1,24 +1,29 @@
 import Board from './board';
 import { useState } from 'react';
 import Link from 'next/link';
-import { IHintData } from './board';
+import { getGameResource, getGameResourceIds, IHintData, IResourceData } from '../lib/game';
 
-export default function Game() {
+export async function getStaticPaths() {
+  const resFileIds = getGameResourceIds();
+
+  return {
+    paths: resFileIds,
+    fallback: false,
+  }
+}
+
+export async function getStaticProps({ params }: { params: {id: string} }) {
+  const resData = await getGameResource(params.id);
+
+  return {
+    props: resData,
+  }
+}
+
+export default function Game(resData: IResourceData) {
 
   const [filledStatus, setFilledStatus] = useState<boolean[]>(Array(100).fill(false));
   const [checkedStatus, setCheckedStatus] = useState<boolean[]>(Array(100).fill(false));
-
-  const rowHint: number[][] = [[2, 2], [1, 1, 1], [1, 1], [1, 1], [1, 1], [1]];
-  const colHint: number[][] = [[2], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [2]];
-  const rowHintMaxLength: number = 3;
-  const colHintMaxLength: number = 2;
-
-  const hint: IHintData = {
-    rowHint: rowHint,
-    colHint: colHint,
-    rowHintMaxLength: rowHintMaxLength,
-    colHintMaxLength: colHintMaxLength
-  };
 
   const fillCell = (i: number) => {
     if (checkedStatus[i]) {
@@ -55,15 +60,17 @@ export default function Game() {
 
     setFilledStatus(Array(100).fill(false));
     setCheckedStatus(Array(100).fill(false));
+
+    console.log(resData);
   }
 
   return (
     <div style={{ minHeight: '100vh'}}>
       <h1 style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>nonogram</h1>
       <Board 
-        rowSize={6} 
-        colSize={7} 
-        hint={hint}
+        rowSize={resData.rowSize} 
+        colSize={resData.colSize} 
+        hint={resData.hint}
         filledStatus={filledStatus}
         checkedStatus={checkedStatus}
         fillCell={fillCell}
