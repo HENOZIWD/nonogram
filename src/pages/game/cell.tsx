@@ -42,7 +42,7 @@ export default function Cell(props: ICellProps) {
       onClick={onLeftClick}
       onContextMenu={onRightClick}
     >
-      {props.checked ? "🚩" : ""}
+      {props.checked ? "❌" : ""}
     </Square>
   )
 }

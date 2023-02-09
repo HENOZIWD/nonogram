@@ -16,16 +16,15 @@ const GameTable = styled.div`
   justify-content: center;
 `
 
-const Td = styled.td`
+const Td = styled.td<{ index: number }>`
   border: 1px solid black;
+  // Line bolding for easy-counting
+  border-left: ${props => (props.index !== 0 && props.index % 5 === 0) ? 2 : 1}px solid black;
 `
 
-const FifthTd = styled(Td)`
-  border-left: 2px solid black;
-`
-
-const FifthTr = styled.tr`
-  border-top: 2px solid black;
+const Tr = styled.tr<{ index: number }>`
+  // Line bolding for easy-counting
+  border-top: ${props => (props.index !== 0 && props.index % 5 === 0) ? 2 : 1}px solid black;
 `
 
 const Hint = styled.td`
@@ -36,29 +35,26 @@ const Hint = styled.td`
   text-align: center;
 `
 
-const ColHint = styled(Hint)`
-  border-left: 1px solid black;
-`
-
-const FifthColHint = styled(Hint)`
-  border-left: 2px solid black;
-`
-
-const RowHint = styled(Hint)`
-  border-Top: 1px solid black;
+const ColHint = styled(Hint)<{ index: number }>`
+  // Line bolding for easy-counting
+  border-left: ${props => (props.index !== 0 && props.index % 5 === 0) ? 2 : 1}px solid black;
 `
 
 interface IBoardProps {
   rowSize: number;
   colSize: number;
-  rowHint: number[][];
-  colHint: number[][];
-  rowHintMaxLength: number;
-  colHintMaxLength: number;
+  hint: IHintData;
   filledStatus: boolean[];
   checkedStatus: boolean[];
   fillCell: (i: number) => void;
   checkCell: (i: number) => void;
+}
+
+export interface IHintData {
+  rowHint: number[][];
+  colHint: number[][];
+  rowHintMaxLength: number;
+  colHintMaxLength: number;
 }
 
 export default function Board(props: IBoardProps) {
@@ -68,56 +64,38 @@ export default function Board(props: IBoardProps) {
     let trContainer: JSX.Element[] = [];
 
     /* ============================= Column hint cell ================================ */
-    for (let rowIdx: number = props.colHintMaxLength-1; rowIdx >= 0; rowIdx--) {
+    for (let rowIdx: number = props.hint.colHintMaxLength-1; rowIdx >= 0; rowIdx--) {
       let tdContainer: JSX.Element[] = [];
 
-      for (let i: number=0; i<props.rowHintMaxLength; i++) {
+      for (let i: number=0; i<props.hint.rowHintMaxLength; i++) {
         // Generate key of hint cell
-        const hintCellIdx = (props.colHintMaxLength - rowIdx - 1)*(props.rowHintMaxLength + colSize) + rowSize*colSize + i;
+        const hintCellIdx = (props.hint.colHintMaxLength - rowIdx - 1)*(props.hint.rowHintMaxLength + colSize) + rowSize*colSize + i;
 
-        tdContainer.push(
+        tdContainer.push( // Empty hint that located top-left corner
           <Hint key={hintCellIdx} style={{ border: 'none' }}>
           </Hint>
         );
       }
       for (let colIdx: number = 0; colIdx<colSize; colIdx++) {
         // Generate key of hint cell
-        const hintCellIdx = (props.colHintMaxLength - rowIdx - 1)*(props.rowHintMaxLength + colSize) + rowSize*colSize + props.rowHintMaxLength + colIdx;
+        const hintCellIdx = (props.hint.colHintMaxLength - rowIdx - 1)*(props.hint.rowHintMaxLength + colSize) + rowSize*colSize + props.hint.rowHintMaxLength + colIdx;
 
-        if (colIdx !== 0 && colIdx % 5 === 0) { // Line bolding for easy-counting
-          if (rowIdx < props.colHint[colIdx].length) {
-            tdContainer.push(
-              <FifthColHint key={hintCellIdx}>
-                {props.colHint[colIdx][props.colHint[colIdx].length-1 - rowIdx]}
-              </FifthColHint>
-            );
-          }
-          else {
-            tdContainer.push(
-              <FifthColHint key={hintCellIdx}>
-              </FifthColHint>
-            );
-          }
-        }
-        else {
-          if (rowIdx < props.colHint[colIdx].length) {
-            tdContainer.push(
-              <ColHint key={hintCellIdx}>
-                {props.colHint[colIdx][props.colHint[colIdx].length-1 - rowIdx]}
-              </ColHint>
-            );
-          }
-          else {
-            tdContainer.push(
-              <ColHint key={hintCellIdx}>
-              </ColHint>
-            );
-          }
-        }
+        tdContainer.push(
+          <ColHint 
+            key={hintCellIdx}
+            index={colIdx}
+          >
+            {(rowIdx < props.hint.colHint[colIdx].length) ? (
+              props.hint.colHint[colIdx][props.hint.colHint[colIdx].length-1 - rowIdx]
+            ) : (
+              null
+            )}
+          </ColHint>
+        )
       }
 
       trContainer.push(
-        <tr key={rowSize + (props.colHintMaxLength - rowIdx - 1)}>
+        <tr key={rowSize + (props.hint.colHintMaxLength - rowIdx - 1)}>
           {tdContainer}
         </tr>
       );
@@ -128,23 +106,19 @@ export default function Board(props: IBoardProps) {
       let tdContainer: JSX.Element[] = [];
 
       /* ============================== Row hint cell =============================== */
-      for (let rowHintIdx: number = props.rowHintMaxLength-1; rowHintIdx >= 0; rowHintIdx--) {
+      for (let rowHintIdx: number = props.hint.rowHintMaxLength-1; rowHintIdx >= 0; rowHintIdx--) {
         // Generate key of hint cell
-        const hintCellIdx = rowSize*colSize + props.colHintMaxLength*(props.rowHintMaxLength + colSize) + rowIdx*props.rowHintMaxLength + (props.rowHintMaxLength - rowHintIdx - 1);
+        const hintCellIdx = rowSize*colSize + props.hint.colHintMaxLength*(props.hint.rowHintMaxLength + colSize) + rowIdx*props.hint.rowHintMaxLength + (props.hint.rowHintMaxLength - rowHintIdx - 1);
 
-        if (rowHintIdx < props.rowHint[rowIdx].length) {
-          tdContainer.push(
-            <RowHint key={hintCellIdx}>
-              {props.rowHint[rowIdx][rowHintIdx]}
-            </RowHint>
-          );
-        }
-        else {
-          tdContainer.push(
-            <RowHint key={hintCellIdx}>
-            </RowHint>
-          );
-        }
+        tdContainer.push(
+          <Hint key={hintCellIdx}>
+            {(rowHintIdx < props.hint.rowHint[rowIdx].length) ? (
+              props.hint.rowHint[rowIdx][rowHintIdx]
+            ) : (
+              null
+            )}
+          </Hint>
+        );
       }
       /* ============================================================================== */
 
@@ -152,48 +126,29 @@ export default function Board(props: IBoardProps) {
       for (let colIdx: number = 0; colIdx<colSize; colIdx++) {
         const cellIdx = rowIdx*colSize + colIdx;
 
-        if (colIdx !== 0 && colIdx % 5 === 0) { // Line bolding for easy-counting
-          tdContainer.push(
-            <FifthTd key={cellIdx}>
-              <Cell 
-                filled={props.filledStatus[cellIdx]}
-                checked={props.checkedStatus[cellIdx]}
-                fillCell={() => props.fillCell(cellIdx)}
-                checkCell={() => props.checkCell(cellIdx)}
-              />
-            </FifthTd>
-          );
-        }
-        else {
-          tdContainer.push(
-            <Td key={cellIdx}>
-              <Cell 
-                filled={props.filledStatus[cellIdx]}
-                checked={props.checkedStatus[cellIdx]}
-                fillCell={() => props.fillCell(cellIdx)}
-                checkCell={() => props.checkCell(cellIdx)}
-              />
-            </Td>
-          );
-        }
+        tdContainer.push(
+          <Td 
+            key={cellIdx}
+            index={colIdx}
+          >
+            <Cell 
+              filled={props.filledStatus[cellIdx]}
+              checked={props.checkedStatus[cellIdx]}
+              fillCell={() => props.fillCell(cellIdx)}
+              checkCell={() => props.checkCell(cellIdx)}
+            />
+          </Td>
+        );
       }
 
-      if (rowIdx !== 0 && rowIdx % 5 === 0) { // Line bolding for easy-counting
-        trContainer.push(
-          <FifthTr key={rowIdx}>
-            {tdContainer}
-          </FifthTr>
-        );
-      }
-      else {
-        trContainer.push(
-          <tr key={rowIdx}>
-            {tdContainer}
-          </tr>
-        );
-        // trContainer.push(<tr>{...tdContainer}</tr>);
-        // auto destructuring?
-      }
+      trContainer.push(
+        <Tr 
+          key={rowIdx}
+          index={rowIdx}
+        >
+          {tdContainer}
+        </Tr>
+      ); // {...tdContainer} Auto destructuring?
       /* =========================================================================== */
 
     }
