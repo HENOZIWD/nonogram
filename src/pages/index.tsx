@@ -27,7 +27,15 @@ export default function Home({ gameCardsData }: { gameCardsData: IGameCard[] }) 
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-
+        <div>
+          <h1>
+            Nonogram
+          </h1>
+          <br />
+          <p style={{ textAlign: 'center'}}>
+            Logic puzzle
+          </p>
+        </div>
         <div className={styles.grid}>
           {gameCardsData.map((card: IGameCard) => (
             <Link

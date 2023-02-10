@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IHintData } from "../lib/game";
 import Board from "./board";
 
@@ -17,6 +17,12 @@ export default function Custom() {
     rowHintMaxLength: 0,
     colHintMaxLength: 0
   };
+
+  useEffect(() => {
+    setFilledStatus(Array(rowSize * colSize).fill(false));
+    setCheckedStatus(Array(rowSize * colSize).fill(false));
+
+  }, [rowSize, colSize]);
 
   const fillCell = (i: number) => {
     if (checkedStatus[i]) {
@@ -71,9 +77,76 @@ export default function Custom() {
     }
   }
 
-  // const onConvertNonogram = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   let rowhint;
-  // }
+  const onConvertNonogram = (event: React.MouseEvent<HTMLButtonElement>) => {
+    let rowHint: number[][] = [];
+    let colHint: number[][] = [];
+    let rowHintMaxLength: number = 0;
+    let colHintMaxLength: number = 0;
+
+    for (let rowIdx: number = 0; rowIdx < rowSize; rowIdx++) {
+      let currentRowHint: number[] = [];
+      let continuousFilledCount = 0;
+
+      for (let colIdx: number = 0; colIdx < colSize; colIdx++) {
+        if (filledStatus[rowIdx*colSize + colIdx]) {
+          continuousFilledCount++;
+        }
+        else if (continuousFilledCount > 0) {
+          currentRowHint.push(continuousFilledCount);
+          continuousFilledCount = 0;
+        }
+      }
+
+      if (continuousFilledCount > 0) {
+        currentRowHint.push(continuousFilledCount);
+      }
+
+      if (currentRowHint.length > rowHintMaxLength) {
+        rowHintMaxLength = currentRowHint.length;
+      }
+      rowHint.push(currentRowHint);
+    }
+
+    for (let colIdx: number = 0; colIdx < colSize; colIdx++) {
+      let currentColHint: number[] = [];
+      let continuousFilledCount = 0;
+
+      for (let rowIdx: number = 0; rowIdx < rowSize; rowIdx++) {
+        if (filledStatus[rowIdx*colSize + colIdx]) {
+          continuousFilledCount++;
+        }
+        else if (continuousFilledCount > 0) {
+          currentColHint.push(continuousFilledCount);
+          continuousFilledCount = 0;
+        }
+      }
+
+      if (continuousFilledCount > 0) {
+        currentColHint.push(continuousFilledCount);
+      }
+
+      if (currentColHint.length > colHintMaxLength) {
+        colHintMaxLength = currentColHint.length;
+      }
+      colHint.push(currentColHint);
+    }
+
+    const convertedHint: IHintData = {
+      rowHint: rowHint,
+      colHint: colHint,
+      rowHintMaxLength: rowHintMaxLength,
+      colHintMaxLength: colHintMaxLength
+    };
+
+    const convertedData = {
+      rowSize: rowSize,
+      colSize: colSize,
+      answer: filledStatus,
+      hint: convertedHint
+    };
+
+    setNonogramJson(JSON.stringify(convertedData, null, " "));
+  }
 
   return (
     <>
@@ -95,15 +168,17 @@ export default function Custom() {
         checkCell={checkCell}
       />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        Row size<input type="range" min={1} max={50} value={rowSize} onChange={onRowSizeChange} />
+        <h3>Warning: Changing board size will remove all of your work!</h3>
+        <br />
+        Row size<input type="range" min={0} max={50} value={rowSize} onChange={onRowSizeChange} />
         <p>{rowSize}</p>
         <br />
-        Column size<input type="range" min={1} max={50} value={colSize} onChange={onColSizeChange} />
+        Column size<input type="range" min={0} max={50} value={colSize} onChange={onColSizeChange} />
         <p>{colSize}</p>
         <br />
         <button type="button" onClick={clearCell}>Clear</button>
         <br />
-        <button type="button">Convert JSON</button>
+        <button type="button" onClick={onConvertNonogram}>Convert JSON</button>
         <br />
         <Link
           href={'/'}

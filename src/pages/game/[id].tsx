@@ -83,13 +83,13 @@ export default function Game(resData: IResourceData) {
   return (
     <>
     <Head>
-      <title>{resData.title} - Nonogram</title>
+      <title>{`${resData.title} - Nonogram`}</title>
       <meta name="description" content={resData.description} />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <div style={{ minHeight: '100vh'}}>
-      <h1 style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>nonogram</h1>
+      <h1 style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>Nonogram</h1>
       <Board 
         rowSize={resData.rowSize} 
         colSize={resData.colSize} 
