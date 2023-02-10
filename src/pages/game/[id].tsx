@@ -22,8 +22,8 @@ export async function getStaticProps({ params }: { params: {id: string} }) {
 
 export default function Game(resData: IResourceData) {
 
-  const [filledStatus, setFilledStatus] = useState<boolean[]>(Array(100).fill(false));
-  const [checkedStatus, setCheckedStatus] = useState<boolean[]>(Array(100).fill(false));
+  const [filledStatus, setFilledStatus] = useState<boolean[]>(Array(resData.rowSize * resData.colSize).fill(false));
+  const [checkedStatus, setCheckedStatus] = useState<boolean[]>(Array(resData.rowSize * resData.colSize).fill(false));
 
   const fillCell = (i: number) => {
     if (checkedStatus[i]) {
@@ -60,8 +60,6 @@ export default function Game(resData: IResourceData) {
 
     setFilledStatus(Array(100).fill(false));
     setCheckedStatus(Array(100).fill(false));
-
-    console.log(resData);
   }
 
   return (
