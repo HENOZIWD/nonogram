@@ -1,4 +1,6 @@
 {
+  "title": "Twelve",
+  "description": "What is your favorite number?",
   "rowSize": 6,
   "colSize": 7,
   "answer": [false, true, false, false, true, true, false,

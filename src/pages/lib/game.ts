@@ -9,19 +9,26 @@ export interface IHintData {
 }
 
 export interface IResourceData {
+  title: string;
+  description: string;
   rowSize: number;
   colSize: number;
   answer: boolean[];
   hint: IHintData;
 }
 
+export interface IGameCard {
+  id: string;
+  title: string;
+  description: string;
+}
+
 const resDir = path.join(process.cwd(), "resources");
 
 export function getGameResourceIds(): { params: {id: string} }[] {
-  const resFileIds = fs.readdirSync(resDir);
+  const resFileNames = fs.readdirSync(resDir);
 
-  return resFileIds.map((id: string): { params: {id: string} } => {
-
+  return resFileNames.map((id: string): { params: {id: string} } => {
     return {
       params: { 
         id: id.replace(/\.json$/, ''),
@@ -35,5 +42,25 @@ export async function getGameResource(id: string): Promise<IResourceData> {
   const resFileData: IResourceData = JSON.parse(fs.readFileSync(resFileName, "utf-8"));
 
   return resFileData;
+}
+
+export async function getAllGameCards(): Promise<IGameCard[]> {
+  const resFileNames = fs.readdirSync(resDir);
+  const resFileIds = resFileNames.map((name: string) => {
+
+    return name.replace(/\.json$/, '');
+  });
+
+  const allGameCardsData: IGameCard[] = await Promise.all(resFileIds.map(async (id: string): Promise<IGameCard> => {
+    const resFileData = await getGameResource(id);
+
+    return {
+      id: id,
+      title: resFileData.title,
+      description: resFileData.description
+    };
+  }));
+
+  return allGameCardsData;
 }
 

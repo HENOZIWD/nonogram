@@ -1,0 +1,13 @@
+{
+  "title": "Test",
+  "description": "Test",
+  "rowSize": 10,
+  "colSize": 10,
+  "answer": [],
+  "hint": {
+    "rowHint": [],
+    "colHint": [],
+    "rowHintMaxLength": 0,
+    "colHintMaxLength": 0
+  }
+}

@@ -2,6 +2,7 @@ import Board from './board';
 import { useState } from 'react';
 import Link from 'next/link';
 import { getGameResource, getGameResourceIds, IHintData, IResourceData } from '../lib/game';
+import Head from 'next/head';
 
 export async function getStaticPaths() {
   const resFileIds = getGameResourceIds();
@@ -24,6 +25,7 @@ export default function Game(resData: IResourceData) {
 
   const [filledStatus, setFilledStatus] = useState<boolean[]>(Array(resData.rowSize * resData.colSize).fill(false));
   const [checkedStatus, setCheckedStatus] = useState<boolean[]>(Array(resData.rowSize * resData.colSize).fill(false));
+  const [answerString, setAnswerString] = useState<string>("");
 
   const fillCell = (i: number) => {
     if (checkedStatus[i]) {
@@ -58,11 +60,34 @@ export default function Game(resData: IResourceData) {
   const clearCell = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    setFilledStatus(Array(100).fill(false));
-    setCheckedStatus(Array(100).fill(false));
+    setFilledStatus(Array(resData.rowSize * resData.colSize).fill(false));
+    setCheckedStatus(Array(resData.rowSize * resData.colSize).fill(false));
+    setAnswerString("");
+  }
+
+  const checkAnswer = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    let isCorrect: boolean = true;
+
+    for (let i: number = 0; i < resData.rowSize*resData.colSize; i++) {
+      if (filledStatus[i] !== resData.answer[i]) {
+        isCorrect = false;
+        break;
+      }
+    }
+
+    setAnswerString(isCorrect ? "Correct!" : "Wrong!");
   }
 
   return (
+    <>
+    <Head>
+      <title>{resData.title} - Nonogram</title>
+      <meta name="description" content={resData.description} />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
     <div style={{ minHeight: '100vh'}}>
       <h1 style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>nonogram</h1>
       <Board 
@@ -75,7 +100,10 @@ export default function Game(resData: IResourceData) {
         checkCell={checkCell}
       />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <button type="button" onClick={clearCell}>clear</button>
+        <button type="button" onClick={clearCell}>Clear</button>
+        <br />
+        <button type="button" onClick={checkAnswer}>Submit</button>
+        <h2>{answerString}</h2>
         <br />
         <Link
           href={'/'}
@@ -84,5 +112,6 @@ export default function Game(resData: IResourceData) {
         </Link>
       </div>
     </div>
+    </>
   )
 }

@@ -1,4 +1,6 @@
 {
+  "title": "Heart",
+  "description": "Make lovely heart!",
   "rowSize": 6,
   "colSize": 7,
   "answer": [false, true, true, false, true, true, false,
