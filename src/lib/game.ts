@@ -1,27 +1,8 @@
 import * as fs from 'fs';
 import path from 'path';
 
-export interface IHintData {
-  rowHint: number[][];
-  colHint: number[][];
-  rowHintMaxLength: number;
-  colHintMaxLength: number;
-}
-
-export interface IResourceData {
-  title: string;
-  description: string;
-  rowSize: number;
-  colSize: number;
-  answer: boolean[];
-  hint: IHintData;
-}
-
-export interface IGameCard {
-  id: string;
-  title: string;
-  description: string;
-}
+import { IGameCard } from '@/pages';
+import { IResourceData } from '@/pages/game/[id]';
 
 const resDir = path.join(process.cwd(), "resources");
 

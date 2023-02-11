@@ -1,8 +1,24 @@
-import Board from './board';
+import Board from '@/components/board';
 import { useState } from 'react';
 import Link from 'next/link';
-import { getGameResource, getGameResourceIds, IHintData, IResourceData } from '../lib/game';
+import { getGameResourceIds, getGameResource } from '@/lib/game';
 import Head from 'next/head';
+
+export interface IHintData {
+  rowHint: number[][];
+  colHint: number[][];
+  rowHintMaxLength: number;
+  colHintMaxLength: number;
+}
+
+export interface IResourceData {
+  title: string;
+  description: string;
+  rowSize: number;
+  colSize: number;
+  answer: boolean[];
+  hint: IHintData;
+}
 
 export async function getStaticPaths() {
   const resFileIds = getGameResourceIds();

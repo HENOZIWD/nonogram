@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Cell from './cell';
-import { IHintData } from '../lib/game';
+import { IHintData } from '@/pages/game/[id]';
 
 const CellTable = styled.table`
   display: table;

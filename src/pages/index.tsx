@@ -2,7 +2,13 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '@/styles/Home.module.css'
 import Link from 'next/link'
-import { getAllGameCards, IGameCard } from './lib/game'
+import { getAllGameCards } from '@/lib/game'
+
+export interface IGameCard {
+  id: string;
+  title: string;
+  description: string;
+}
 
 export async function getStaticProps() {
   const gameCardsData = await getAllGameCards();

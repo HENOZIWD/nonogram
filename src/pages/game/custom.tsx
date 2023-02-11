@@ -1,8 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { IHintData } from "../lib/game";
-import Board from "./board";
+import { IHintData } from "./[id]";
+import Board from "@/components/board";
 
 export default function Custom() {
   const [rowSize, setRowSize] = useState<number>(10);
