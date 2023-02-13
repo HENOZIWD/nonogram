@@ -1,0 +1,20 @@
+.cellTable {
+  display: table;
+  border: 2px solid green;
+  border-collapse: collapse;
+  margin: 0.5rem;
+}
+
+.gameTable {
+  display: flex;
+  padding: 1rem;
+  justify-content: center;
+}
+
+.hint {
+  width: 1rem;
+  height: 1rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-align: center;
+}

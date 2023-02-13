@@ -1,23 +1,12 @@
 import { useState } from 'react';
-import styled from 'styled-components';
-
-const Square = styled.div<{ filled: boolean }>`
-  border: 1px solid white;
-  width: 1rem;
-  height: 1rem;
-  text-align: center;
-  font-size: 0.5rem;
-  user-select: none;
-  background-color: ${props => 
-    props.filled ? '#000000' : '#ffffff'
-  };
-`
+import styles from '@/styles/Cell.module.css'
 
 interface ICellProps {
   filled: boolean;
   checked: boolean;
   fillCell: () => void;
   checkCell: () => void;
+  color: string;
 }
 
 export default function Cell(props: ICellProps) {
@@ -37,12 +26,13 @@ export default function Cell(props: ICellProps) {
   }
 
   return (
-    <Square 
-      filled={props.filled}
+    <div 
+      className={styles.cell}
+      style={{ backgroundColor: props.filled ? props.color : '#ffffff' }}
       onClick={onLeftClick}
       onContextMenu={onRightClick}
     >
       {props.checked ? "❌" : ""}
-    </Square>
+    </div>
   )
 }

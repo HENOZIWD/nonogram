@@ -1,43 +1,6 @@
-import styled from 'styled-components';
 import Cell from './cell';
 import { IHintData } from '@/pages/game/[id]';
-
-const CellTable = styled.table`
-  display: table;
-  border: 2px solid green;
-  border-collapse: collapse;
-  margin: 0.5rem;
-`
-
-const GameTable = styled.div`
-  display: flex;
-  padding: 1rem;
-  justify-content: center;
-`
-
-const Td = styled.td<{ index: number }>`
-  border: 1px solid black;
-  // Line bolding for easy-counting
-  border-left: ${props => (props.index !== 0 && props.index % 5 === 0) ? 2 : 1}px solid black;
-`
-
-const Tr = styled.tr<{ index: number }>`
-  // Line bolding for easy-counting
-  border-top: ${props => (props.index !== 0 && props.index % 5 === 0) ? 2 : 1}px solid black;
-`
-
-const Hint = styled.td`
-  width: 1rem;
-  height: 1rem;
-  font-size: 0.75rem;
-  font-weight: bold;
-  text-align: center;
-`
-
-const ColHint = styled(Hint)<{ index: number }>`
-  // Line bolding for easy-counting
-  border-left: ${props => (props.index !== 0 && props.index % 5 === 0) ? 2 : 1}px solid black;
-`
+import styles from '@/styles/Board.module.css'
 
 interface IBoardProps {
   rowSize: number;
@@ -64,8 +27,8 @@ export default function Board(props: IBoardProps) {
         const hintCellIdx = (props.hint.colHintMaxLength - rowIdx - 1)*(props.hint.rowHintMaxLength + colSize) + rowSize*colSize + i;
 
         tdContainer.push( // Empty hint that located top-left corner
-          <Hint key={hintCellIdx} style={{ border: 'none' }}>
-          </Hint>
+          <td className={styles.hint} key={hintCellIdx} style={{ border: 'none' }}>
+          </td>
         );
       }
       for (let colIdx: number = 0; colIdx<colSize; colIdx++) {
@@ -73,16 +36,17 @@ export default function Board(props: IBoardProps) {
         const hintCellIdx = (props.hint.colHintMaxLength - rowIdx - 1)*(props.hint.rowHintMaxLength + colSize) + rowSize*colSize + props.hint.rowHintMaxLength + colIdx;
 
         tdContainer.push(
-          <ColHint 
+          <td
             key={hintCellIdx}
-            index={colIdx}
+            className={styles.hint}
+            style={{ borderLeft: `${(colIdx !== 0 && colIdx % 5 === 0) ? 2 : 1}px solid black` }}
           >
             {(rowIdx < props.hint.colHint[colIdx].length) ? (
               props.hint.colHint[colIdx][props.hint.colHint[colIdx].length-1 - rowIdx]
             ) : (
               null
             )}
-          </ColHint>
+          </td>
         )
       }
 
@@ -104,13 +68,16 @@ export default function Board(props: IBoardProps) {
         const hintCellIdx = rowSize*colSize + props.hint.colHintMaxLength*(props.hint.rowHintMaxLength + colSize) + rowIdx*props.hint.rowHintMaxLength + (props.hint.rowHintMaxLength - rowHintIdx - 1);
 
         tdContainer.push(
-          <Hint key={hintCellIdx}>
+          <td 
+            key={hintCellIdx}
+            className={styles.hint}
+          >
             {(rowHintIdx < currentRowHintLength) ? (
               props.hint.rowHint[rowIdx][currentRowHintLength - rowHintIdx - 1]
             ) : (
               null
             )}
-          </Hint>
+          </td>
         );
       }
       /* ============================================================================== */
@@ -120,27 +87,30 @@ export default function Board(props: IBoardProps) {
         const cellIdx = rowIdx*colSize + colIdx;
 
         tdContainer.push(
-          <Td 
+          <td 
             key={cellIdx}
-            index={colIdx}
+            style={{ 
+              border: '1px solid black',
+              borderLeft: `${(colIdx !== 0 && colIdx % 5 === 0) ? 2 : 1}px solid black`}}
           >
             <Cell 
               filled={props.filledStatus[cellIdx]}
               checked={props.checkedStatus[cellIdx]}
               fillCell={() => props.fillCell(cellIdx)}
               checkCell={() => props.checkCell(cellIdx)}
+              color={'#000000'}
             />
-          </Td>
+          </td>
         );
       }
 
       trContainer.push(
-        <Tr 
+        <tr 
           key={rowIdx}
-          index={rowIdx}
+          style={{ borderTop: `${(rowIdx !== 0 && rowIdx % 5 === 0) ? 2 : 1}px solid black` }}
         >
           {tdContainer}
-        </Tr>
+        </tr>
       ); // {...tdContainer} Auto destructuring?
       /* =========================================================================== */
 
@@ -154,12 +124,15 @@ export default function Board(props: IBoardProps) {
   }
 
   return (
-    <GameTable>
-      <CellTable onContextMenu={contextmenuPrevent}>
+    <div className={styles.gameTable}>
+      <table 
+        className={styles.cellTable}
+        onContextMenu={contextmenuPrevent}
+      >
         <tbody>
           { renderCell(props.rowSize, props.colSize) }
         </tbody>
-      </CellTable>
-    </GameTable>
+      </table>
+    </div>
   )
 }

@@ -64,7 +64,7 @@ export default function Custom() {
   const onRowSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
 
-    if (0 < event.target.valueAsNumber && event.target.valueAsNumber <= 50) {
+    if (0 < event.target.valueAsNumber && event.target.valueAsNumber <= 100) {
       setRowSize(event.target.valueAsNumber);
     }
   }
@@ -72,7 +72,7 @@ export default function Custom() {
   const onColSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
 
-    if (0 < event.target.valueAsNumber && event.target.valueAsNumber <= 50) {
+    if (0 < event.target.valueAsNumber && event.target.valueAsNumber <= 100) {
       setColSize(event.target.valueAsNumber);
     }
   }
@@ -170,10 +170,10 @@ export default function Custom() {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <h3>Warning: Changing board size will remove all of your work!</h3>
         <br />
-        Row size<input type="range" min={0} max={50} value={rowSize} onChange={onRowSizeChange} />
+        Row size<input type="range" min={0} max={100} value={rowSize} onChange={onRowSizeChange} />
         <p>{rowSize}</p>
         <br />
-        Column size<input type="range" min={0} max={50} value={colSize} onChange={onColSizeChange} />
+        Column size<input type="range" min={0} max={100} value={colSize} onChange={onColSizeChange} />
         <p>{colSize}</p>
         <br />
         <button type="button" onClick={clearCell}>Clear</button>
