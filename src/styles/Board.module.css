@@ -1,8 +1,7 @@
 .cellTable {
   display: table;
-  border: 2px solid green;
+  /* border: 2px solid green; */
   border-collapse: collapse;
-  margin: 0.5rem;
 }
 
 .gameTable {
@@ -17,4 +16,10 @@
   font-size: 0.75rem;
   font-weight: bold;
   text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(1px, auto));
+  border: 2px solid green;
 }

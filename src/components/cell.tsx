@@ -1,38 +1,39 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styles from '@/styles/Cell.module.css'
 
 interface ICellProps {
-  filled: boolean;
-  checked: boolean;
+  status: number;
   fillCell: () => void;
   checkCell: () => void;
   color: string;
 }
 
-export default function Cell(props: ICellProps) {
+function Cell(props: ICellProps) {
 
   const onLeftClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     props.fillCell();
-
-    // console.log("Left Click");
   }
 
   const onRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     props.checkCell();
-
-    // console.log("Right Click");
   }
 
   return (
     <div 
       className={styles.cell}
-      style={{ backgroundColor: props.filled ? props.color : '#ffffff' }}
+      style={{ backgroundColor: props.status === 1 ? props.color : '#ffffff' }}
       onClick={onLeftClick}
       onContextMenu={onRightClick}
     >
-      {props.checked ? "❌" : ""}
+      {props.status === 2 ? "❌" : ""}
     </div>
   )
 }
+
+function isStatusEqual(prevProps: ICellProps, nextProps: ICellProps) {
+  return prevProps.status === nextProps.status;
+}
+
+export default React.memo(Cell, isStatusEqual);

@@ -16,7 +16,7 @@ export interface IResourceData {
   description: string;
   rowSize: number;
   colSize: number;
-  answer: boolean[];
+  answer: number[][];
   hint: IHintData;
 }
 
@@ -39,45 +39,25 @@ export async function getStaticProps({ params }: { params: {id: string} }) {
 
 export default function Game(resData: IResourceData) {
 
-  const [filledStatus, setFilledStatus] = useState<boolean[]>(Array(resData.rowSize * resData.colSize).fill(false));
-  const [checkedStatus, setCheckedStatus] = useState<boolean[]>(Array(resData.rowSize * resData.colSize).fill(false));
+  const [status, setStatus] = useState<number[][]>(Array.from({length: resData.rowSize}, () => Array.from({length: resData.colSize}, () => 0)));
   const [answerString, setAnswerString] = useState<string>("");
 
-  const fillCell = (i: number) => {
-    if (checkedStatus[i]) {
-      
-      let checkedCopy = checkedStatus.slice();
-      checkedCopy[i] = false;
-      setCheckedStatus(checkedCopy);
-    }
-
-    let filledCopy = filledStatus.slice();
-    filledCopy[i] = !filledStatus[i];
-    setFilledStatus(filledCopy);
-
-    // console.log("Fill " + i);
+  const fillCell = (row: number, col: number) => {
+    let statusCopy = [...status];
+    statusCopy[row][col] = status[row][col] === 1 ? 0 : 1;
+    setStatus(statusCopy);
   }
 
-  const checkCell = (i: number) => {
-    if (filledStatus[i]) {
-
-      let filledCopy = filledStatus.slice();
-      filledCopy[i] = false;
-      setFilledStatus(filledCopy);
-    }
-
-    let checkedCopy = checkedStatus.slice();
-    checkedCopy[i] = !checkedStatus[i];
-    setCheckedStatus(checkedCopy);
-
-    // console.log("Check " + i);
+  const checkCell = (row: number, col: number) => {
+    let statusCopy = [...status];
+    statusCopy[row][col] = status[row][col] === 2 ? 0 : 2;
+    setStatus(statusCopy);
   }
 
   const clearCell = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    setFilledStatus(Array(resData.rowSize * resData.colSize).fill(false));
-    setCheckedStatus(Array(resData.rowSize * resData.colSize).fill(false));
+    setStatus(Array.from(Array.from({length: resData.rowSize}, () => Array.from({length: resData.colSize}, () => 0))));
     setAnswerString("");
   }
 
@@ -86,10 +66,11 @@ export default function Game(resData: IResourceData) {
 
     let isCorrect: boolean = true;
 
-    for (let i: number = 0; i < resData.rowSize*resData.colSize; i++) {
-      if (filledStatus[i] !== resData.answer[i]) {
-        isCorrect = false;
-        break;
+    for (let row: number = 0; isCorrect && row < resData.rowSize; row++) {
+      for (let col: number = 0; isCorrect && col < resData.colSize; col++){
+        if (status[row][col] !== resData.answer[row][col]) {
+          isCorrect = false;
+        }
       }
     }
 
@@ -110,8 +91,7 @@ export default function Game(resData: IResourceData) {
         rowSize={resData.rowSize} 
         colSize={resData.colSize} 
         hint={resData.hint}
-        filledStatus={filledStatus}
-        checkedStatus={checkedStatus}
+        status={status}
         fillCell={fillCell}
         checkCell={checkCell}
       />

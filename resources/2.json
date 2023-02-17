@@ -1,18 +1,1 @@
-{
-  "title": "Twelve",
-  "description": "What is your favorite number?",
-  "rowSize": 6,
-  "colSize": 7,
-  "answer": [false, true, false, false, true, true, false,
-             true, true, false, true, false, false, true,
-             false, true, false, false, false, false, true,
-             false, true, false, false, true, true, false,
-             false, true, false, true, false, false, false,
-             true, true, true, true, true, true, true],
-  "hint": {
-    "rowHint": [[1, 2], [2, 1, 1], [1, 1], [1, 2], [1, 1], [7]],
-    "colHint": [[1, 1], [6], [1], [1, 2], [1, 1, 1], [1, 1, 1], [2, 1]],
-    "rowHintMaxLength": 3,
-    "colHintMaxLength": 3
-  }
-}
+{ "title": "Twelve", "description": "What is your favorite number?", "rowSize": 10, "colSize": 10, "answer": [ [ 0, 0, 1, 0, 0, 0, 1, 1, 1, 0 ], [ 0, 1, 1, 0, 0, 1, 0, 0, 0, 1 ], [ 1, 1, 1, 0, 0, 1, 0, 0, 0, 1 ], [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 1 ], [ 0, 0, 1, 0, 0, 0, 0, 0, 0, 1 ], [ 0, 0, 1, 0, 0, 0, 1, 1, 1, 0 ], [ 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ] ], "hint": { "rowHint": [ [ 0, 1, 3 ], [ 2, 1, 1 ], [ 3, 1, 1 ], [ 0, 1, 1 ], [ 0, 1, 1 ], [ 0, 1, 3 ], [ 0, 1, 1 ], [ 0, 1, 1 ], [ 0, 1, 1 ], [ 0, 0, 10 ] ], "colHint": [ [ 0, 0, 0, 0, 0, 0, 1, 1, 1, 0 ], [ 1, 2, 0, 0, 0, 2, 1, 1, 1, 4 ], [ 1, 1, 10, 1, 1, 4, 1, 1, 1, 1 ] ], "rowHintMaxLength": 3, "colHintMaxLength": 3 } }

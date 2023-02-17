@@ -4,11 +4,20 @@ import React, { useEffect, useState } from "react";
 import { IHintData } from "./[id]";
 import Board from "@/components/board";
 
+interface ICustomData {
+  rowSize: number;
+  colSize: number;
+  status: number[][];
+}
+
 export default function Custom() {
-  const [rowSize, setRowSize] = useState<number>(10);
-  const [colSize, setColSize] = useState<number>(10);
-  const [filledStatus, setFilledStatus] = useState<boolean[]>(Array(rowSize * colSize).fill(false));
-  const [checkedStatus, setCheckedStatus] = useState<boolean[]>(Array(rowSize * colSize).fill(false));
+  const [customData, setCustomData] = useState<ICustomData>(
+    {
+      rowSize: 10,
+      colSize: 10,
+      status: Array.from({length: 10}, () => Array.from({length: 10}, () => 0))
+    }
+  );
   const [nonogramJson, setNonogramJson] = useState<string>("");
 
   const dummyHint: IHintData = {
@@ -18,77 +27,42 @@ export default function Custom() {
     colHintMaxLength: 0
   };
 
-  useEffect(() => {
-    setFilledStatus(Array(rowSize * colSize).fill(false));
-    setCheckedStatus(Array(rowSize * colSize).fill(false));
-
-  }, [rowSize, colSize]);
-
-  const fillCell = (i: number) => {
-    if (checkedStatus[i]) {
-      
-      let checkedCopy = checkedStatus.slice();
-      checkedCopy[i] = false;
-      setCheckedStatus(checkedCopy);
-    }
-
-    let filledCopy = filledStatus.slice();
-    filledCopy[i] = !filledStatus[i];
-    setFilledStatus(filledCopy);
-
-    // console.log("Fill " + i);
+  const fillCell = (row: number, col: number) => {
+    let statusCopy = [...customData.status];
+    statusCopy[row][col] = customData.status[row][col] === 1 ? 0 : 1;
+    setCustomData({...customData, status: statusCopy});
   }
 
-  const checkCell = (i: number) => {
-    if (filledStatus[i]) {
-
-      let filledCopy = filledStatus.slice();
-      filledCopy[i] = false;
-      setFilledStatus(filledCopy);
-    }
-
-    let checkedCopy = checkedStatus.slice();
-    checkedCopy[i] = !checkedStatus[i];
-    setCheckedStatus(checkedCopy);
-
-    // console.log("Check " + i);
+  const checkCell = (row: number, col: number) => {
+    let statusCopy = [...customData.status];
+    statusCopy[row][col] = customData.status[row][col] === 2 ? 0 : 2;
+    setCustomData({...customData, status: statusCopy});
   }
 
   const clearCell = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-
-    setFilledStatus(Array(rowSize * colSize).fill(false));
-    setCheckedStatus(Array(rowSize * colSize).fill(false));
-  }
-
-  const onRowSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-
-    if (0 < event.target.valueAsNumber && event.target.valueAsNumber <= 100) {
-      setRowSize(event.target.valueAsNumber);
-    }
-  }
-
-  const onColSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-
-    if (0 < event.target.valueAsNumber && event.target.valueAsNumber <= 100) {
-      setColSize(event.target.valueAsNumber);
-    }
+    let statusCopy = [...customData.status];
+    statusCopy.map((row: number[], rowIdx: number) => {
+      row.map((col: number, colIdx: number) => {
+        statusCopy[rowIdx][colIdx] = 0;
+      })
+    })
+    setCustomData({...customData, status: statusCopy});
   }
 
   const onConvertNonogram = (event: React.MouseEvent<HTMLButtonElement>) => {
-    let rowHint: number[][] = [];
-    let colHint: number[][] = [];
+    event.preventDefault();
+
+    let rowHintContainer: number[][] = [];
+    let colHintContainer: number[][] = [];
     let rowHintMaxLength: number = 0;
     let colHintMaxLength: number = 0;
 
-    for (let rowIdx: number = 0; rowIdx < rowSize; rowIdx++) {
+    for (let rowIdx: number = 0; rowIdx < customData.rowSize; rowIdx++) {
       let currentRowHint: number[] = [];
       let continuousFilledCount = 0;
-
-      for (let colIdx: number = 0; colIdx < colSize; colIdx++) {
-        if (filledStatus[rowIdx*colSize + colIdx]) {
+      for (let colIdx: number = 0; colIdx < customData.colSize; colIdx++) {
+        if (customData.status[rowIdx][colIdx] === 1) {
           continuousFilledCount++;
         }
         else if (continuousFilledCount > 0) {
@@ -101,18 +75,18 @@ export default function Custom() {
         currentRowHint.push(continuousFilledCount);
       }
 
-      if (currentRowHint.length > rowHintMaxLength) {
+      if (rowHintMaxLength < currentRowHint.length) {
         rowHintMaxLength = currentRowHint.length;
       }
-      rowHint.push(currentRowHint);
+
+      rowHintContainer.push(currentRowHint);
     }
 
-    for (let colIdx: number = 0; colIdx < colSize; colIdx++) {
+    for (let colIdx: number = 0; colIdx < customData.colSize; colIdx++) {
       let currentColHint: number[] = [];
       let continuousFilledCount = 0;
-
-      for (let rowIdx: number = 0; rowIdx < rowSize; rowIdx++) {
-        if (filledStatus[rowIdx*colSize + colIdx]) {
+      for (let rowIdx: number = 0; rowIdx < customData.colSize; rowIdx++) {
+        if (customData.status[rowIdx][colIdx] === 1) {
           continuousFilledCount++;
         }
         else if (continuousFilledCount > 0) {
@@ -125,24 +99,45 @@ export default function Custom() {
         currentColHint.push(continuousFilledCount);
       }
 
-      if (currentColHint.length > colHintMaxLength) {
+      if (colHintMaxLength < currentColHint.length) {
         colHintMaxLength = currentColHint.length;
       }
-      colHint.push(currentColHint);
+
+      colHintContainer.push(currentColHint);
     }
 
-    const convertedHint: IHintData = {
-      rowHint: rowHint,
-      colHint: colHint,
+    rowHintContainer.map((rowHint: number[]) => {
+      const currentLength = rowHint.length;
+      for (let i: number = 0; i < rowHintMaxLength - currentLength; i++) {
+        rowHint.unshift(0);
+      }
+    })
+
+    colHintContainer.map((colHint: number[]) => {
+      const currentLength = colHint.length;
+      for (let i: number = 0; i < colHintMaxLength - currentLength; i++) {
+        colHint.unshift(0);
+      }
+    })
+
+    const transposedColHint = colHintContainer[0].map((col: number, colIdx: number) => (
+      colHintContainer.map((row: number[], rowIdx: number) => (
+        row[colIdx]
+      ))
+    ));
+
+    const hint: IHintData = {
+      rowHint: rowHintContainer,
+      colHint: transposedColHint,
       rowHintMaxLength: rowHintMaxLength,
       colHintMaxLength: colHintMaxLength
     };
 
     const convertedData = {
-      rowSize: rowSize,
-      colSize: colSize,
-      answer: filledStatus,
-      hint: convertedHint
+      rowSize: customData.rowSize,
+      colSize: customData.colSize,
+      answer: customData.status,
+      hint: hint
     };
 
     setNonogramJson(JSON.stringify(convertedData, null, " "));
@@ -159,23 +154,14 @@ export default function Custom() {
     <div style={{ minHeight: '100vh' }}>
       <h1 style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>Custom nonogram</h1>
       <Board
-        rowSize={rowSize} 
-        colSize={colSize} 
+        rowSize={customData.rowSize} 
+        colSize={customData.colSize} 
         hint={dummyHint}
-        filledStatus={filledStatus}
-        checkedStatus={checkedStatus}
+        status={customData.status}
         fillCell={fillCell}
         checkCell={checkCell}
       />
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <h3>Warning: Changing board size will remove all of your work!</h3>
-        <br />
-        Row size<input type="range" min={0} max={100} value={rowSize} onChange={onRowSizeChange} />
-        <p>{rowSize}</p>
-        <br />
-        Column size<input type="range" min={0} max={100} value={colSize} onChange={onColSizeChange} />
-        <p>{colSize}</p>
-        <br />
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
         <button type="button" onClick={clearCell}>Clear</button>
         <br />
         <button type="button" onClick={onConvertNonogram}>Convert JSON</button>
