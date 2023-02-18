@@ -1,0 +1,1 @@
+{ "title": "Radar", "description": "Something detected!", "rowSize": 5, "colSize": 5, "answer": [ [ 1, 0, 0, 0, 1 ], [ 0, 1, 0, 1, 0 ], [ 0, 1, 0, 0, 0 ], [ 1, 1, 1, 1, 0 ], [ 1, 1, 0, 0, 1 ] ], "hint": { "rowHint": [ [ 1, 1 ], [ 1, 1 ], [ 0, 1 ], [ 0, 4 ], [ 2, 1 ] ], "colHint": [ [ 1, 0, 0, 1, 1 ], [ 2, 4, 1, 1, 1 ] ], "rowHintMaxLength": 2, "colHintMaxLength": 2 } }

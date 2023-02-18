@@ -1,0 +1,1 @@
+{ "title": "House", "description": "Tiny house!", "rowSize": 5, "colSize": 5, "answer": [ [ 0, 0, 1, 0, 0 ], [ 0, 1, 0, 1, 0 ], [ 1, 0, 0, 0, 1 ], [ 0, 1, 1, 1, 0 ], [ 0, 1, 0, 1, 0 ] ], "hint": { "rowHint": [ [ 0, 1 ], [ 1, 1 ], [ 1, 1 ], [ 0, 3 ], [ 1, 1 ] ], "colHint": [ [ 0, 1, 1, 1, 0 ], [ 1, 2, 1, 2, 1 ] ], "rowHintMaxLength": 2, "colHintMaxLength": 2 } }

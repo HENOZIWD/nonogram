@@ -57,7 +57,13 @@ export default function Game(resData: IResourceData) {
   const clearCell = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    setStatus(Array.from(Array.from({length: resData.rowSize}, () => Array.from({length: resData.colSize}, () => 0))));
+    let statusCopy = [...status];
+    statusCopy.map((row: number[], rowIdx: number) => {
+      row.map((col: number, colIdx: number) => {
+        statusCopy[rowIdx][colIdx] = 0;
+      })
+    })
+    setStatus(statusCopy);
     setAnswerString("");
   }
 
@@ -68,7 +74,8 @@ export default function Game(resData: IResourceData) {
 
     for (let row: number = 0; isCorrect && row < resData.rowSize; row++) {
       for (let col: number = 0; isCorrect && col < resData.colSize; col++){
-        if (status[row][col] !== resData.answer[row][col]) {
+        if (resData.answer[row][col] === 0 && status[row][col] === 1 ||
+            resData.answer[row][col] === 1 && status[row][col] !== 1) {
           isCorrect = false;
         }
       }
@@ -86,7 +93,7 @@ export default function Game(resData: IResourceData) {
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <div style={{ minHeight: '100vh'}}>
-      <h1 style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>Nonogram</h1>
+      <h1 style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>{resData.title}</h1>
       <Board 
         rowSize={resData.rowSize} 
         colSize={resData.colSize} 

@@ -21,6 +21,8 @@ export default function Custom() {
       status: []
     }
   );
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [nonogramJson, setNonogramJson] = useState<string>("");
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(true);
 
@@ -48,12 +50,6 @@ export default function Custom() {
     setCustomData({...customData, status: statusCopy});
   }
 
-  const checkCell = (row: number, col: number) => {
-    let statusCopy = [...customData.status];
-    statusCopy[row][col] = customData.status[row][col] === 2 ? 0 : 2;
-    setCustomData({...customData, status: statusCopy});
-  }
-
   const clearCell = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     let statusCopy = [...customData.status];
@@ -63,6 +59,21 @@ export default function Custom() {
       })
     })
     setCustomData({...customData, status: statusCopy});
+    setTitle("");
+    setDescription("");
+    setNonogramJson("");
+  }
+
+  const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+
+    setTitle(event.target.value);
+  }
+
+  const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+
+    setDescription(event.target.value);
   }
 
   const onConvertNonogram = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -149,6 +160,8 @@ export default function Custom() {
     };
 
     const convertedData = {
+      title: title,
+      description: description,
       rowSize: customData.rowSize,
       colSize: customData.colSize,
       answer: customData.status,
@@ -192,10 +205,25 @@ export default function Custom() {
         hint={dummyHint}
         status={customData.status}
         fillCell={fillCell}
-        checkCell={checkCell}
+        checkCell={fillCell}
       />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
         <button type="button" onClick={clearCell}>Clear</button>
+        <br />
+        <input 
+          type="text"
+          placeholder="Title"
+          style={{ margin: '0.2rem'}}
+          onChange={onTitleChange}
+          value={title}
+        />
+        <input 
+          type="text"
+          placeholder="Description"
+          style={{ margin: '0.2rem'}}
+          onChange={onDescriptionChange}
+          value={description}
+        />
         <br />
         <button type="button" onClick={onConvertNonogram}>Convert JSON</button>
         <br />
