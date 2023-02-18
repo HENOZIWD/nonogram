@@ -178,6 +178,12 @@ export default function Custom() {
         <button type="button" onClick={() => selectSize(25)}>25x25</button>
         <button type="button" onClick={() => selectSize(50)}>50x50</button>
         <button type="button" onClick={() => selectSize(100)}>100x100</button>
+        <br />
+        <Link
+          href={'/'}
+        >
+          Cancel
+        </Link>
       </ReactModal>
       <h1 style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>Custom nonogram</h1>
       <Board

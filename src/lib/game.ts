@@ -38,7 +38,8 @@ export async function getAllGameCards(): Promise<IGameCard[]> {
     return {
       id: id,
       title: resFileData.title,
-      description: resFileData.description
+      description: resFileData.description,
+      size: resFileData.rowSize
     };
   }));
 

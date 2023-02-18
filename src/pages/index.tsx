@@ -1,13 +1,14 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import styles from '@/styles/Home.module.css'
 import Link from 'next/link'
 import { getAllGameCards } from '@/lib/game'
+import { useState } from 'react'
 
 export interface IGameCard {
   id: string;
   title: string;
   description: string;
+  size: number;
 }
 
 export async function getStaticProps() {
@@ -23,6 +24,32 @@ export async function getStaticProps() {
 }
 
 export default function Home({ gameCardsData }: { gameCardsData: IGameCard[] }) {
+
+  const [filteredGameCards, setFilteredGameCards] = useState<IGameCard[]>(gameCardsData.slice());
+
+  const onSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    event.preventDefault();
+
+    const filter = +event.target.value;
+    // console.log(filter + "/" + typeof filter);
+
+    console.log(filter + typeof filter);
+
+    if (filter === 0) {
+      setFilteredGameCards(gameCardsData.slice());
+      // console.log("default");
+    }
+    else {
+      let filtered: IGameCard[] = [];
+      gameCardsData.map((card: IGameCard) => {
+        if (card.size === filter) {
+          filtered.push(card);
+        }
+      })
+      // console.log(filtered);
+      setFilteredGameCards(filtered);
+    }
+  }
 
   return (
     <>
@@ -42,6 +69,15 @@ export default function Home({ gameCardsData }: { gameCardsData: IGameCard[] }) 
             Logic puzzle
           </p>
         </div>
+        <select onChange={onSelectChange} style={{ margin: '1.5rem'}}>
+          <option value={0}>All</option>
+          <option value={5}>5x5</option>
+          <option value={10}>10x10</option>
+          <option value={15}>15x15</option>
+          <option value={25}>25x25</option>
+          <option value={50}>50x50</option>
+          <option value={100}>100x100</option>
+        </select>
         <div className={styles.grid}>
           <Link
             href={'/game/custom'}
@@ -54,7 +90,7 @@ export default function Home({ gameCardsData }: { gameCardsData: IGameCard[] }) 
               Make your own!
             </p>
           </Link>
-          {gameCardsData.map((card: IGameCard) => (
+          {filteredGameCards.map((card: IGameCard) => (
             <Link
               key={card.id}
               href={`/game/${card.id}`}
@@ -65,6 +101,9 @@ export default function Home({ gameCardsData }: { gameCardsData: IGameCard[] }) 
               </h2>
               <p>
                 {card.description}
+              </p>
+              <p>
+                {card.size}x{card.size}
               </p>
             </Link>
           ))}
