@@ -1,8 +1,9 @@
-import Head from "next/head";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { IHintData } from "./[id]";
-import Board from "@/components/board";
+import Head from 'next/head';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import { IHintData } from './[id]';
+import Board from '@/components/board';
+import ReactModal from 'react-modal';
 
 interface ICustomData {
   rowSize: number;
@@ -10,15 +11,29 @@ interface ICustomData {
   status: number[][];
 }
 
+ReactModal.setAppElement('#__next');
+
 export default function Custom() {
   const [customData, setCustomData] = useState<ICustomData>(
     {
-      rowSize: 10,
-      colSize: 10,
-      status: Array.from({length: 10}, () => Array.from({length: 10}, () => 0))
+      rowSize: 0,
+      colSize: 0,
+      status: []
     }
   );
   const [nonogramJson, setNonogramJson] = useState<string>("");
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(true);
+
+  const selectSize = (customLength: number) => {
+    setCustomData(
+      {
+        rowSize: customLength,
+        colSize: customLength,
+        status: Array.from({length: customLength}, () => Array.from({length: customLength}, () => 0))
+      }
+    );
+    setModalIsOpen(false);
+  }
 
   const dummyHint: IHintData = {
     rowHint: [],
@@ -152,6 +167,18 @@ export default function Custom() {
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <div style={{ minHeight: '100vh' }}>
+      <ReactModal
+        isOpen={modalIsOpen}
+        style={{ content: { top: '40%', left: '40%', right: 'auto', bottom: 'auto' } }}
+        contentLabel="Select nonogram size"
+      >
+        <button type="button" onClick={() => selectSize(5)}>5x5</button>
+        <button type="button" onClick={() => selectSize(10)}>10x10</button>
+        <button type="button" onClick={() => selectSize(15)}>15x15</button>
+        <button type="button" onClick={() => selectSize(25)}>25x25</button>
+        <button type="button" onClick={() => selectSize(50)}>50x50</button>
+        <button type="button" onClick={() => selectSize(100)}>100x100</button>
+      </ReactModal>
       <h1 style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>Custom nonogram</h1>
       <Board
         rowSize={customData.rowSize} 

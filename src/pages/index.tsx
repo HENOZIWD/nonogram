@@ -33,7 +33,7 @@ export default function Home({ gameCardsData }: { gameCardsData: IGameCard[] }) 
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <div>
+        <div className={styles.title}>
           <h1>
             Nonogram
           </h1>
@@ -43,6 +43,17 @@ export default function Home({ gameCardsData }: { gameCardsData: IGameCard[] }) 
           </p>
         </div>
         <div className={styles.grid}>
+          <Link
+            href={'/game/custom'}
+            className={styles.card}
+          >
+            <h2>
+              Custom&nbsp;<span>&gt;</span>
+            </h2>
+            <p>
+              Make your own!
+            </p>
+          </Link>
           {gameCardsData.map((card: IGameCard) => (
             <Link
               key={card.id}
@@ -57,17 +68,6 @@ export default function Home({ gameCardsData }: { gameCardsData: IGameCard[] }) 
               </p>
             </Link>
           ))}
-          <Link
-            href={'/game/custom'}
-            className={styles.card}
-          >
-            <h2>
-              Custom&nbsp;<span>&gt;</span>
-            </h2>
-            <p>
-              Make your own!
-            </p>
-          </Link>
         </div>
       </main>
     </>
