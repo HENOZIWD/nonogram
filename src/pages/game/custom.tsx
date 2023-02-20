@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IHintData } from './[id]';
 import Board from '@/components/board';
 import ReactModal from 'react-modal';
@@ -25,6 +25,7 @@ export default function Custom() {
   const [description, setDescription] = useState<string>("");
   const [nonogramJson, setNonogramJson] = useState<string>("");
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(true);
+  const dragStatus = useRef<number>(0);
 
   const selectSize = (customLength: number) => {
     setCustomData(
@@ -45,12 +46,20 @@ export default function Custom() {
   };
 
   const fillCell = (row: number, col: number) => {
+    dragStatus.current = 1;
     let statusCopy = [...customData.status];
-    statusCopy[row][col] = customData.status[row][col] === 1 ? 0 : 1;
+    statusCopy[row][col] = 1;
     setCustomData({...customData, status: statusCopy});
   }
 
-  const clearCell = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const eraseCell = (row: number, col: number) => {
+    dragStatus.current = 0;
+    let statusCopy = [...customData.status];
+    statusCopy[row][col] = 0;
+    setCustomData({...customData, status: statusCopy});
+  }
+
+  const clearBoard = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     let statusCopy = [...customData.status];
     statusCopy.map((row: number[], rowIdx: number) => {
@@ -206,9 +215,11 @@ export default function Custom() {
         status={customData.status}
         fillCell={fillCell}
         checkCell={fillCell}
+        eraseCell={eraseCell}
+        dragStatus={dragStatus}
       />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-        <button type="button" onClick={clearCell}>Clear</button>
+        <button type="button" onClick={clearBoard}>Clear</button>
         <br />
         <input 
           type="text"

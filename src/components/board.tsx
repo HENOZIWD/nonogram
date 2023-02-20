@@ -10,6 +10,8 @@ interface IBoardProps {
   status: number[][];
   fillCell: (row: number, col: number) => void;
   checkCell: (row: number, col: number) => void;
+  eraseCell: (row: number, col: number) => void;
+  dragStatus: React.MutableRefObject<number>;
 }
 
 export default function Board(props: IBoardProps) {
@@ -88,7 +90,9 @@ export default function Board(props: IBoardProps) {
                       status={props.status[rowIdx][colIdx]}
                       fillCell={() => props.fillCell(rowIdx, colIdx)}
                       checkCell={() => props.checkCell(rowIdx, colIdx)} 
+                      eraseCell={() => props.eraseCell(rowIdx, colIdx)}
                       color='#000000'
+                      dragStatus={props.dragStatus}
                     />
                   </td>
                 ))}

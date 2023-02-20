@@ -1,5 +1,5 @@
 import Board from '@/components/board';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { getGameResourceIds, getGameResource } from '@/lib/game';
 import Head from 'next/head';
@@ -41,20 +41,30 @@ export default function Game(resData: IResourceData) {
 
   const [status, setStatus] = useState<number[][]>(Array.from({length: resData.rowSize}, () => Array.from({length: resData.colSize}, () => 0)));
   const [answerString, setAnswerString] = useState<string>("");
+  const dragStatus = useRef<number>(0);
 
   const fillCell = (row: number, col: number) => {
+    dragStatus.current = 1;
     let statusCopy = [...status];
-    statusCopy[row][col] = status[row][col] === 1 ? 0 : 1;
+    statusCopy[row][col] = 1;
     setStatus(statusCopy);
   }
 
   const checkCell = (row: number, col: number) => {
+    dragStatus.current = 2;
     let statusCopy = [...status];
-    statusCopy[row][col] = status[row][col] === 2 ? 0 : 2;
+    statusCopy[row][col] = 2;
     setStatus(statusCopy);
   }
 
-  const clearCell = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const eraseCell = (row: number, col: number) => {
+    dragStatus.current = 0;
+    let statusCopy = [...status];
+    statusCopy[row][col] = 0;
+    setStatus(statusCopy);
+  }
+
+  const clearBoard = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     let statusCopy = [...status];
@@ -80,7 +90,7 @@ export default function Game(resData: IResourceData) {
         }
       }
     }
-
+    
     setAnswerString(isCorrect ? "Correct!" : "Wrong!");
   }
 
@@ -101,9 +111,11 @@ export default function Game(resData: IResourceData) {
         status={status}
         fillCell={fillCell}
         checkCell={checkCell}
+        eraseCell={eraseCell}
+        dragStatus={dragStatus}
       />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <button type="button" onClick={clearCell}>Clear</button>
+        <button type="button" onClick={clearBoard}>Clear</button>
         <br />
         <button type="button" onClick={checkAnswer}>Submit</button>
         <h2>{answerString}</h2>

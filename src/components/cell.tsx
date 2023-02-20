@@ -5,27 +5,43 @@ interface ICellProps {
   status: number;
   fillCell: () => void;
   checkCell: () => void;
+  eraseCell: () => void;
   color: string;
+  dragStatus: React.MutableRefObject<number>;
 }
 
 function Cell(props: ICellProps) {
 
-  const onLeftClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
-    props.fillCell();
+
+    if (event.button === 0) {
+      (props.status !== 1) ? props.fillCell() : props.eraseCell();
+    }
+    else if (event.button === 2) {
+      (props.status !== 2) ? props.checkCell() : props.eraseCell();
+    }
   }
 
-  const onRightClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const onDrag = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
-    props.checkCell();
+
+    // console.log(props.dragStatus.current);
+
+    if (event.buttons === 1) {
+      (props.dragStatus.current === 1) ? props.fillCell() : props.eraseCell();
+    }
+    else if (event.buttons === 2) {
+      (props.dragStatus.current === 2) ? props.checkCell() : props.eraseCell();
+    }
   }
 
   return (
     <div 
       className={styles.cell}
       style={{ backgroundColor: props.status === 1 ? props.color : '#ffffff' }}
-      onClick={onLeftClick}
-      onContextMenu={onRightClick}
+      onMouseDown={onClick}
+      onMouseEnter={onDrag}
     >
       {props.status === 2 ? "❌" : ""}
     </div>
