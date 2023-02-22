@@ -53,6 +53,7 @@
 .card {
   min-height: 12rem;
   padding: 1rem 1.2rem;
+  margin: 0.5rem;
   border-radius: var(--border-radius);
   background: rgba(var(--card-rgb), 0);
   border: 1px solid rgba(var(--card-border-rgb), 0);

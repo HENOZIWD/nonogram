@@ -80,8 +80,21 @@ export default function Home({ gameCardsData }: { gameCardsData: IGameCard[] }) 
         </select>
         <div className={styles.grid}>
           <Link
+            href={'/game/imageCustom'}
+            className={styles.card}
+            style={{ backgroundColor: '#c6c6c6' }}
+          >
+            <h2>
+              Image Custom&nbsp;<span>&gt;</span>
+            </h2>
+            <p>
+              Make your own with image!
+            </p>
+          </Link>
+          <Link
             href={'/game/custom'}
             className={styles.card}
+            style={{ backgroundColor: '#c6c6c6' }}
           >
             <h2>
               Custom&nbsp;<span>&gt;</span>
