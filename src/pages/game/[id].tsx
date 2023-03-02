@@ -1,5 +1,5 @@
 import Board from '@/components/board';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { getGameResourceIds, getGameResource } from '@/lib/game';
 import Head from 'next/head';
@@ -42,6 +42,17 @@ export default function Game(resData: IResourceData) {
   const [status, setStatus] = useState<number[][]>(Array.from({length: resData.rowSize}, () => Array.from({length: resData.colSize}, () => 0)));
   const [answerString, setAnswerString] = useState<string>("");
   const dragStatus = useRef<number>(0);
+  const [timer, setTimer] = useState<number>(0);
+  const [record, setRecord] = useState<number>(0);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimer(timer => timer + 1);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+
+  }, [])
 
   const fillCell = (row: number, col: number) => {
     dragStatus.current = 1;
@@ -91,7 +102,13 @@ export default function Game(resData: IResourceData) {
       }
     }
     
-    setAnswerString(isCorrect ? "Correct!" : "Wrong!");
+    if (isCorrect) {
+      setAnswerString("Correct!");
+      setRecord(timer);
+    }
+    else {
+      setAnswerString("Wrong!");
+    }
   }
 
   return (
@@ -114,11 +131,15 @@ export default function Game(resData: IResourceData) {
         eraseCell={eraseCell}
         dragStatus={dragStatus}
       />
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'}}>
+        <div>{Math.floor(timer/60)}&#58;{timer%60 < 10 ? `0${timer%60}` : timer%60}</div>
+        <br />
         <button type="button" onClick={clearBoard}>Clear</button>
         <br />
         <button type="button" onClick={checkAnswer}>Submit</button>
-        <h2>{answerString}</h2>
+        <h2>
+          {answerString}{answerString === "Correct!" && <div>Record&#58; {Math.floor(record/60)}:{record%60 < 10 ? `0${record%60}` : record%60}</div>}
+        </h2>
         <br />
         <Link
           href={'/'}
