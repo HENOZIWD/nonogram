@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { getGameResourceIds, getGameResource } from '@/lib/game';
 import Head from 'next/head';
 import styles from '@/styles/Game.module.css';
+import { useInterval } from '@/hooks/useInterval';
 
 export interface IHintData {
   rowHint: number[][];
@@ -45,15 +46,13 @@ export default function Game(resData: IResourceData) {
   const dragStatus = useRef<number>(0);
   const [timer, setTimer] = useState<number>(0);
   const [record, setRecord] = useState<number>(0);
+  const [recordStatus, setRecordStatus] = useState<boolean>(true);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTimer(timer => timer + 1);
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-
-  }, [])
+  useInterval(() => {
+    if (recordStatus) {
+      setTimer(timer + 1);
+    }
+  }, 1000);
 
   const fillCell = (row: number, col: number) => {
     dragStatus.current = 1;
@@ -105,6 +104,7 @@ export default function Game(resData: IResourceData) {
     
     if (isCorrect) {
       setAnswerString("Correct!");
+      setRecordStatus(false);
       setRecord(timer);
     }
     else {
