@@ -1,7 +1,7 @@
 import NextImage from 'next/image';
 import Link from 'next/link';
 import { SyntheticEvent, useRef, useState } from 'react';
-import ReactModal from 'react-modal';
+import styles from '@/styles/ImageCustom.module.css';
 
 interface ICanvasData {
   xPos: number;
@@ -9,8 +9,6 @@ interface ICanvasData {
   width: number;
   height: number;
 }
-
-ReactModal.setAppElement('#__next');
 
 export default function ImageCustom() {
 
@@ -23,7 +21,6 @@ export default function ImageCustom() {
     width: 0,
     height: 0
   });
-  const [modalIsOpen, setModalIsOpen] = useState<boolean>(true);
 
   const onImageFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const curFiles = event.target.files;
@@ -59,80 +56,49 @@ export default function ImageCustom() {
     const ctx = canvasRef.current!.getContext("2d");
     ctx!.clearRect(0, 0, 500, 500);
     ctx!.drawImage(imageRef.current!, canvasImageData.xPos, canvasImageData.yPos, canvasImageData.width, canvasImageData.height);
-    setModalIsOpen(false);
   }
 
   return (
-    <div style={{ minHeight: '100vh' }}>
-      <ReactModal
-        isOpen={modalIsOpen}
-        style={{ content: { top: '40%', left: '40%', right: 'auto', bottom: 'auto' } }}
-        contentLabel="Select nonogram size"
-      >
-        <button 
-          type="button"
-          style={{ fontSize: '1rem' }}
-        >
-          <label htmlFor="image_uploads">
-            Choose image to upload
-          </label>
-        </button>
-        <input 
-          type="file" 
-          id="image_uploads" 
-          accept="image/*" 
-          onChange={onImageFileChange}
-          style={{ display: 'none' }} // !! Not good for screen reader
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div className={styles.imageSelect}>
+        <NextImage
+          ref={imageRef}
+          src={currentImageSrc}
+          onLoad={onImageLoad}
+          alt="err"
+          width={0}
+          height={0}
+          style={{ display: 'none' }}
         />
-        <br />
-        <Link
-          href={'/'}
-          style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}
-        >
-          Cancel
-        </Link>
-      </ReactModal>
-      <NextImage
-        ref={imageRef}
-        src={currentImageSrc}
-        onLoad={onImageLoad}
-        alt="err"
-        width={0}
-        height={0}
-        style={{ display: 'none' }}
-      />
-      <canvas 
-        ref={canvasRef} 
-        width={500} 
-        height={500}
-        style={{ border: '1px solid lightgray' }}
-      />
-      <br />
-      {modalIsOpen ? null : 
-      <>
-      <button 
-        type="button"
-        style={{ fontSize: '1rem', margin: '1rem' }}
-      >
-        <label htmlFor="image_uploads">
-          Choose image to upload
-        </label>
-      </button>
-      <input 
-        type="file" 
-        id="image_uploads" 
-        accept="image/*" 
-        onChange={onImageFileChange}
-        style={{ display: 'none' }} // !! Not good for screen reader
-      />
-      <br />
-      <Link
-        href={'/'}
-        style={{ margin: '1rem' }}
-      >
-        Back to Home
-      </Link>
-      </>}
+        {canvasImageData.width !== 0 &&
+        <>
+          <canvas
+            ref={canvasRef} 
+            width={500} 
+            height={500}
+          />
+          <br />
+        </>
+        }
+        <div className={styles.upload}>
+          <label htmlFor="image_uploads">
+            Choose image to upload&nbsp;
+          </label>
+          <input 
+            type="file" 
+            id="image_uploads" 
+            accept="image/*" 
+            onChange={onImageFileChange}
+          />
+        </div>
+        <div className={styles.cancel}>
+          <Link
+            href={'/'}
+          >
+            Cancel
+          </Link>
+        </div>
+      </div>
     </div>
   )
 }

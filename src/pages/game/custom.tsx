@@ -1,9 +1,10 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { IHintData } from './[id]';
 import Board from '@/components/board';
 import ReactModal from 'react-modal';
+import styles from '@/styles/Custom.module.css'
 
 interface ICustomData {
   rowSize: number;
@@ -188,7 +189,7 @@ export default function Custom() {
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
-    <div style={{ minHeight: '100vh' }}>
+    <div className={styles.custom}>
       <ReactModal
         isOpen={modalIsOpen}
         style={{ content: { top: '40%', left: '40%', right: 'auto', bottom: 'auto' } }}
@@ -203,11 +204,12 @@ export default function Custom() {
         <br />
         <Link
           href={'/'}
+          style={{ display: 'flex', justifyContent: 'center' }}
         >
           Cancel
         </Link>
       </ReactModal>
-      <h1 style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>Custom nonogram</h1>
+      <h1>Custom nonogram</h1>
       <Board
         rowSize={customData.rowSize} 
         colSize={customData.colSize} 
@@ -218,7 +220,7 @@ export default function Custom() {
         eraseCell={eraseCell}
         dragStatus={dragStatus}
       />
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+      <div className={styles.info}>
         <button type="button" onClick={clearBoard}>Clear</button>
         <br />
         <input 

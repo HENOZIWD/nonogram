@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { getGameResourceIds, getGameResource } from '@/lib/game';
 import Head from 'next/head';
+import styles from '@/styles/Game.module.css';
 
 export interface IHintData {
   rowHint: number[][];
@@ -119,8 +120,8 @@ export default function Game(resData: IResourceData) {
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
-    <div style={{ minHeight: '100vh'}}>
-      <h1 style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>{resData.title}</h1>
+    <div className={styles.game}>
+      <h1>{resData.title}</h1>
       <Board 
         rowSize={resData.rowSize} 
         colSize={resData.colSize} 
@@ -131,7 +132,7 @@ export default function Game(resData: IResourceData) {
         eraseCell={eraseCell}
         dragStatus={dragStatus}
       />
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'}}>
+      <div className={styles.info}>
         <div>{Math.floor(timer/60)}&#58;{timer%60 < 10 ? `0${timer%60}` : timer%60}</div>
         <br />
         <button type="button" onClick={clearBoard}>Clear</button>
